@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CoLabAI - Intelligent Team Task Manager</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 10px; margin-bottom: 30px; }
+        h1 { font-size: 2.5em; margin-bottom: 10px; }
+        h2 { color: #333; margin-bottom: 20px; }
+        h3 { color: #555; margin: 20px 0 10px 0; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .tab-btn { padding: 10px 20px; background: white; border: none; cursor: pointer; border-radius: 5px; font-weight: bold; }
+        .tab-btn.active { background: #667eea; color: white; }
+        .tab-content { display: none; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .tab-content.active { display: block; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        input, textarea, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-family: inherit; }
+        button { background: #667eea; color: white; padding: 12px 24px; border: none; border-radius: 5px; cursor: pointer; font-size: 1em; margin-right: 10px; }
+        button:hover { background: #764ba2; }
+        .member-item { background: #f9f9f9; padding: 15px; margin: 10px 0; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; }
+        .task-card { background: #f9f9f9; padding: 15px; margin: 10px 0; border-left: 4px solid #667eea; border-radius: 5px; }
+        .task-card.completed { border-left-color: #4caf50; opacity: 0.7; }
+        .milestone { padding: 15px; margin: 10px 0; background: #e3f2fd; border-radius: 5px; border-left: 4px solid #2196f3; }
+        .progress-bar { width: 100%; height: 20px; background: #ddd; border-radius: 10px; overflow: hidden; margin-top: 10px; }
+        .progress-fill { height: 100%; background: #667eea; transition: width 0.3s; }
+        .alert { padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .alert.info { background: #e3f2fd; color: #1565c0; }
+        .alert.warning { background: #fff3e0; color: #e65100; }
+        .alert.success { background: #e8f5e9; color: #2e7d32; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .stat { background: #f9f9f9; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center; }
+        .stat h3 { color: #667eea; font-size: 2em; margin: 0; }
+        .stat p { margin: 10px 0 0 0; }
+        .button-group { display: flex; gap: 10px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 CoLabAI</h1>
+            <p>Intelligent Team Task Assignment & Project Management</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('phase1', event)">📝 Phase 1: Setup</button>
+            <button class="tab-btn" onclick="switchTab('phase2', event)">🎯 Phase 2: Assign Tasks</button>
+            <button class="tab-btn" onclick="switchTab('phase3', event)">📅 Phase 3: Timeline</button>
+            <button class="tab-btn" onclick="switchTab('phase4', event)">📊 Phase 4: Tracking</button>
+            <button class="tab-btn" onclick="switchTab('phase5', event)">✅ Phase 5: Completion</button>
+        </div>
+
+        <!-- PHASE 1: PROJECT SETUP -->
+        <div id="phase1" class="tab-content active">
+            <h2>📝 Project Setup</h2>
+            <div class="form-group">
+                <label>Project Name:</label>
+                <input type="text" id="projectName" placeholder="e.g., E-Commerce Platform">
+            </div>
+            <div class="form-group">
+                <label>Project Description:</label>
+                <textarea id="projectDesc" placeholder="Describe your project goals and requirements" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Deadline:</label>
+                <input type="date" id="deadline">
+            </div>
+
+            <h3>Add Team Members & Skills</h3>
+            <div class="form-group">
+                <label>Member Name:</label>
+                <input type="text" id="memberName" placeholder="Enter team member name">
+            </div>
+            <div class="form-group">
+                <label>Skills (comma separated):</label>
+                <input type="text" id="memberSkills" placeholder="e.g., frontend, javascript, react, nodejs">
+            </div>
+            <button onclick="addMember()">➕ Add Member</button>
+
+            <div id="membersList" style="margin-top: 20px;"></div>
+
+            <button style="margin-top: 20px; width: 100%; padding: 15px; font-size: 1.1em;" onclick="createProject()">🚀 Create Project</button>
+        </div>
+
+        <!-- PHASE 2: TASK ASSIGNMENT -->
+        <div id="phase2" class="tab-content">
+            <h2>🎯 AI-Powered Task Assignment</h2>
+            <div id="phase2Content">
+                <div class="alert info">Create a project in Phase 1 to see AI-assigned tasks</div>
+            </div>
+        </div>
+
+        <!-- PHASE 3: TIMELINE -->
+        <div id="phase3" class="tab-content">
+            <h2>📅 Project Timeline & Milestones</h2>
+            <div id="phase3Content">
+                <div class="alert info">Timeline will be generated after task assignment</div>
+            </div>
+        </div>
+
+        <!-- PHASE 4: TRACKING -->
+        <div id="phase4" class="tab-content">
+            <h2>📊 Project Tracking & Monitoring</h2>
+            <div class="grid">
+                <div class="stat">
+                    <h3 id="totalTasks">0</h3>
+                    <p>Total Tasks</p>
+                </div>
+                <div class="stat">
+                    <h3 id="completedTasks">0</h3>
+                    <p>✅ Completed</p>
+                </div>
+                <div class="stat">
+                    <h3 id="inProgressTasks">0</h3>
+                    <p>⏳ In Progress</p>
+                </div>
+            </div>
+            <div id="phase4Content" style="margin-top: 20px;">
+                <div class="alert info">Project tracking will appear here</div>
+            </div>
+        </div>
+
+        <!-- PHASE 5: COMPLETION -->
+        <div id="phase5" class="tab-content">
+            <h2>✅ Project Completion & Delivery</h2>
+            <div id="phase5Content">
+                <div class="alert info">Completion checklist will appear here</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentProject = null;
+        let members = [];
+
+        function switchTab(tabName, event) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function addMember() {
+            const name = document.getElementById('memberName').value.trim();
+            const skillsInput = document.getElementById('memberSkills').value.trim();
+            const skills = skillsInput ? skillsInput.split(',').map(s => s.trim().toLowerCase()) : [];
+            
+            if (!name) { 
+                alert('❌ Please enter a member name'); 
+                return; 
+            }
+            if (skills.length === 0) {
+                alert('❌ Please enter at least one skill');
+                return;
+            }
+            
+            members.push({ name, skills });
+            document.getElementById('memberName').value = '';
+            document.getElementById('memberSkills').value = '';
+            updateMembersList();
+        }
+
+        function updateMembersList() {
+            const list = document.getElementById('membersList');
+            if (members.length === 0) {
+                list.innerHTML = '';
+                return;
+            }
+            list.innerHTML = '<h3>👥 Team Members:</h3>' + members.map((m, i) => 
+                `<div class="member-item">
+                    <div>
+                        <strong>${m.name}</strong><br>
+                        <small>Skills: ${m.skills.join(', ')}</small>
+                    </div>
+                    <button onclick="removeMember(${i})" style="background: #f44336; padding: 8px 12px; margin: 0;">✕ Remove</button>
+                </div>`
+            ).join('');
+        }
+
+        function removeMember(index) {
+            members.splice(index, 1);
+            updateMembersList();
+        }
+
+        function createProject() {
+            const projectName = document.getElementById('projectName').value.trim();
+            const deadline = document.getElementById('deadline').value;
+            
+            if (!projectName) {
+                alert('❌ Please enter a project name');
+                return;
+            }
+            if (!deadline) {
+                alert('❌ Please select a deadline');
+                return;
+            }
+            if (members.length === 0) {
+                alert('❌ Please add at least one team member');
+                return;
+            }
+
+            fetch('/api/create-project', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    projectName,
+                    deadline,
+                    members
+                })
+            })
+            .then(r => r.json())
+            .then(data => {
+                currentProject = data.project_id;
+                alert('✅ Project created! Moving to task assignment...');
+                assignTasks();
+                createTimeline();
+            })
+            .catch(err => alert('❌ Error creating project: ' + err));
+        }
+
+        function assignTasks() {
+            fetch(`/api/assign-tasks/${currentProject}`, { method: 'POST' })
+            .then(r => r.json())
+            .then(data => {
+                const html = `
+                    <div class="alert success">✅ AI has assigned tasks based on team skills!</div>
+                    <h3>📋 Task Assignments:</h3>
+                    ${data.tasks.map(task => `
+                        <div class="task-card">
+                            <h4>${task.name}</h4>
+                            <p><strong>👤 Assigned to:</strong> ${task.assigned_to}</p>
+                            <p><strong>⏱️ Duration:</strong> ${task.duration_days} days</p>
+                            <p><strong>🎯 Skills needed:</strong> ${task.skills_required.join(', ')}</p>
+                            <p><strong>📌 Status:</strong> <span style="background: #fff3e0; padding: 2px 8px; border-radius: 3px;">${task.status}</span></p>
+                        </div>
+                    `).join('')}
+                    <h3>📊 Team Workload Distribution:</h3>
+                    ${Object.entries(data.workload).map(([name, days]) => {
+                        const percentage = Math.min((days/30)*100, 100);
+                        return `
+                            <div style="margin-bottom: 15px;">
+                                <p><strong>${name}</strong>: ${days} days</p>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${percentage}%"></div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                `;
+                document.getElementById('phase2Content').innerHTML = html;
+            })
+            .catch(err => console.error('Error:', err));
+        }
+
+        function createTimeline() {
+            fetch(`/api/create-timeline/${currentProject}`, { method: 'POST' })
+            .then(r => r.json())
+            .then(data => {
+                const html = `
+                    <div class="alert success">✅ Project timeline created!</div>
+                    <h3>🎯 Key Milestones:</h3>
+                    ${data.milestones.map((m, i) => {
+                        const date = new Date(m.date).toLocaleDateString();
+                        return `
+                            <div class="milestone">
+                                <h4>${m.name}</h4>
+                                <p><strong>📅 Date:</strong> ${date}</p>
+                            </div>
+                        `;
+                    }).join('')}
+                    <div style="margin-top: 20px; padding: 15px; background: #e8f5e9; border-radius: 5px;">
+                        <strong>✨ Project Overview:</strong><br>
+                        Your project is now organized with clear tasks, assignments, and milestones. Team members know their responsibilities and deadlines.
+                    </div>
+                `;
+                document.getElementById('phase3Content').innerHTML = html;
+            })
+            .catch(err => console.error('Error:', err));
+        }
+
+        // Set default deadline to 30 days from now
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 30);
+        document.getElementById('deadline').valueAsDate = tomorrow;
+    </script>
+</body>
+</html>
